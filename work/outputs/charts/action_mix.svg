@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="520" viewBox="0 0 960 520">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="480.0" y="34" text-anchor="middle" font-family="Arial" font-size="24" fill="#16232a">Action mix (rule + playbook labels)</text>
+<text x="178" y="152.3" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">REFRESH_CONTENT</text>
+<rect x="190" y="70.0" width="730.0" height="126.7" fill="#8B5A2B" rx="4"/>
+<text x="928.0" y="152.3" font-family="Arial" font-size="13" fill="#27343b">1.67e+04</text>
+<text x="178" y="289.0" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">REVIEW_STALE</text>
+<rect x="190" y="206.7" width="351.6" height="126.7" fill="#8B5A2B" rx="4"/>
+<text x="549.6" y="289.0" font-family="Arial" font-size="13" fill="#27343b">8.06e+03</text>
+<text x="178" y="425.7" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">MONITOR</text>
+<rect x="190" y="343.3" width="227.7" height="126.7" fill="#8B5A2B" rx="4"/>
+<text x="425.7" y="425.7" font-family="Arial" font-size="13" fill="#27343b">5.22e+03</text>
+</svg>

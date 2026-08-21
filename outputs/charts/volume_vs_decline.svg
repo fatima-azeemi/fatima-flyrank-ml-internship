@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="520" viewBox="0 0 960 520">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="480.0" y="34" text-anchor="middle" font-family="Arial" font-size="24" fill="#16232a">Decline rate by search volume (observed)</text>
+<text x="178" y="130.1" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">Zero/Low</text>
+<rect x="190" y="70.0" width="730.0" height="92.5" fill="#3B6D4A" rx="4"/>
+<text x="928.0" y="130.1" font-family="Arial" font-size="13" fill="#27343b">59</text>
+<text x="178" y="232.6" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">Medium</text>
+<rect x="190" y="172.5" width="643.7" height="92.5" fill="#3B6D4A" rx="4"/>
+<text x="841.7" y="232.6" font-family="Arial" font-size="13" fill="#27343b">52.1</text>
+<text x="178" y="335.1" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">High</text>
+<rect x="190" y="275.0" width="619.5" height="92.5" fill="#3B6D4A" rx="4"/>
+<text x="817.5" y="335.1" font-family="Arial" font-size="13" fill="#27343b">50.1</text>
+<text x="178" y="437.6" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">Very High</text>
+<rect x="190" y="377.5" width="549.8" height="92.5" fill="#3B6D4A" rx="4"/>
+<text x="747.8" y="437.6" font-family="Arial" font-size="13" fill="#27343b">44.5</text>
+</svg>

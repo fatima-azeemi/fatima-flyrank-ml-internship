@@ -1,0 +1,134 @@
+{
+  "source": "work/notebooks (intern lane: 6-feature RF)",
+  "rows_scored": 30000,
+  "declining_rows": 16262,
+  "declining_rate": 0.5421,
+  "split": "stratified_80_20",
+  "random_state": 42,
+  "features": [
+    "word_count",
+    "content_age_days",
+    "impressions_90d",
+    "avg_position",
+    "ctr",
+    "search_volume"
+  ],
+  "metrics": {
+    "base_rate": {
+      "accuracy": 0.542,
+      "precision": 0.542,
+      "recall": 1.0,
+      "f1": 0.7029831387808041,
+      "roc_auc": null
+    },
+    "week4_rule": {
+      "accuracy": 0.48183333333333334,
+      "precision": 0.5359477124183006,
+      "recall": 0.32779827798277983,
+      "f1": 0.4067925968326655,
+      "roc_auc": null
+    },
+    "random_forest_test": {
+      "accuracy": 0.6768333333333333,
+      "precision": 0.6646601454727865,
+      "recall": 0.8148831488314883,
+      "f1": 0.7321453239397707,
+      "roc_auc": 0.7373893526053165
+    },
+    "random_forest_train": {
+      "accuracy": 0.6995833333333333,
+      "precision": 0.6792779426310583,
+      "recall": 0.8445810914681015,
+      "f1": 0.7529637497430275,
+      "roc_auc": 0.7723030474912906
+    }
+  },
+  "feature_importance": [
+    {
+      "Feature": "impressions_90d",
+      "Importance": 0.3430817582044263
+    },
+    {
+      "Feature": "avg_position",
+      "Importance": 0.2333453322751262
+    },
+    {
+      "Feature": "content_age_days",
+      "Importance": 0.20915366253080078
+    },
+    {
+      "Feature": "word_count",
+      "Importance": 0.09268758598883665
+    },
+    {
+      "Feature": "ctr",
+      "Importance": 0.07146364423299525
+    },
+    {
+      "Feature": "search_volume",
+      "Importance": 0.05026801676781475
+    }
+  ],
+  "action_counts": {
+    "REFRESH_CONTENT": 16726,
+    "REVIEW_STALE": 8057,
+    "MONITOR": 5217
+  },
+  "reason_counts": {
+    "STALE_HIGH_IMPRESSIONS": 16726,
+    "STALE_LOW_IMPRESSIONS": 8057,
+    "LOW_PRIORITY": 5217
+  },
+  "age_decline": [
+    {
+      "age_tier": "<90d",
+      "n": 492,
+      "decline_rate": 0.6686991869918699,
+      "decline_pct": 66.869918699187
+    },
+    {
+      "age_tier": "90-180d",
+      "n": 11780,
+      "decline_rate": 0.6255517826825128,
+      "decline_pct": 62.555178268251275
+    },
+    {
+      "age_tier": "181-365d",
+      "n": 11368,
+      "decline_rate": 0.5148662913441239,
+      "decline_pct": 51.48662913441239
+    },
+    {
+      "age_tier": ">365d",
+      "n": 6360,
+      "decline_rate": 0.4262578616352201,
+      "decline_pct": 42.62578616352201
+    }
+  ],
+  "volume_decline": [
+    {
+      "volume_tier": "Zero/Low",
+      "n": 18392,
+      "decline_rate": 0.5903653762505437,
+      "decline_pct": 59.03653762505437
+    },
+    {
+      "volume_tier": "Medium",
+      "n": 6091,
+      "decline_rate": 0.5206041700870137,
+      "decline_pct": 52.060417008701364
+    },
+    {
+      "volume_tier": "High",
+      "n": 2489,
+      "decline_rate": 0.5010044194455605,
+      "decline_pct": 50.10044194455605
+    },
+    {
+      "volume_tier": "Very High",
+      "n": 560,
+      "decline_rate": 0.4446428571428571,
+      "decline_pct": 44.46428571428571
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="520" viewBox="0 0 960 520">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="480.0" y="34" text-anchor="middle" font-family="Arial" font-size="24" fill="#16232a">RF train vs test (honest gap check)</text>
+<text x="178" y="107.9" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">Train Acc</text>
+<rect x="190" y="70.0" width="661.3" height="58.3" fill="#B85C38" rx="4"/>
+<text x="859.3" y="107.9" font-family="Arial" font-size="13" fill="#27343b">70</text>
+<text x="178" y="176.2" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">Test Acc</text>
+<rect x="190" y="138.3" width="639.8" height="58.3" fill="#B85C38" rx="4"/>
+<text x="837.8" y="176.2" font-family="Arial" font-size="13" fill="#27343b">67.7</text>
+<text x="178" y="244.6" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">Train F1</text>
+<rect x="190" y="206.7" width="711.7" height="58.3" fill="#B85C38" rx="4"/>
+<text x="909.7" y="244.6" font-family="Arial" font-size="13" fill="#27343b">75.3</text>
+<text x="178" y="312.9" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">Test F1</text>
+<rect x="190" y="275.0" width="692.0" height="58.3" fill="#B85C38" rx="4"/>
+<text x="890.0" y="312.9" font-family="Arial" font-size="13" fill="#27343b">73.2</text>
+<text x="178" y="381.3" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">Train ROC</text>
+<rect x="190" y="343.3" width="730.0" height="58.3" fill="#B85C38" rx="4"/>
+<text x="928.0" y="381.3" font-family="Arial" font-size="13" fill="#27343b">77.2</text>
+<text x="178" y="449.6" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">Test ROC</text>
+<rect x="190" y="411.7" width="697.0" height="58.3" fill="#B85C38" rx="4"/>
+<text x="895.0" y="449.6" font-family="Arial" font-size="13" fill="#27343b">73.7</text>
+</svg>
