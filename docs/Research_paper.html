@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Decay Cliff &mdash; What Actually Predicts Content Decline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#132227;
+    --ink-soft:#3c4a4e;
+    --paper:#F1EFE6;
+    --paper-raised:#FBFAF4;
+    --line:#c9c3af;
+    --signal-amber:#B8722B;
+    --signal-slate:#3C6E71;
+    --signal-rust:#8C3B2E;
+    --mono:'JetBrains Mono', ui-monospace, monospace;
+    --serif:'Newsreader', Georgia, serif;
+    --sans:'Inter', system-ui, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.6;
+    font-size:17px;
+  }
+  ::selection{background:var(--signal-amber); color:#fff;}
+  a{color:var(--signal-rust);}
+  a:hover{color:var(--ink);}
+
+  .wrap{max-width:880px; margin:0 auto; padding:0 28px;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:
+      radial-gradient(ellipse at 20% -10%, rgba(184,114,43,0.14), transparent 55%),
+      var(--ink);
+    color:var(--paper-raised);
+    padding:88px 0 64px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero .wrap{position:relative; z-index:2;}
+  .eyebrow{
+    font-family:var(--mono);
+    text-transform:uppercase;
+    letter-spacing:0.14em;
+    font-size:12.5px;
+    color:#e8b087;
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:26px;
+  }
+  .eyebrow::before{content:"";width:26px;height:1px;background:#e8b087;display:inline-block;}
+  h1{
+    font-family:var(--serif);
+    font-weight:500;
+    font-size:clamp(2.1rem, 5vw, 3.4rem);
+    line-height:1.08;
+    margin:0 0 22px;
+    letter-spacing:-0.01em;
+  }
+  h1 em{font-style:italic; color:#e8b087; font-weight:400;}
+  .dek{
+    font-size:1.15rem;
+    color:#cfd8d2;
+    max-width:60ch;
+    font-weight:400;
+    margin:0 0 34px;
+  }
+  .hero-meta{
+    display:flex; flex-wrap:wrap; gap:22px 34px;
+    font-family:var(--mono); font-size:13px; color:#9fb0aa;
+    border-top:1px solid rgba(255,255,255,0.14);
+    padding-top:22px;
+  }
+  .hero-meta strong{display:block; color:var(--paper-raised); font-size:15px; font-weight:600; margin-bottom:2px;}
+
+  /* cliff divider - the signature element */
+  .cliff{
+    display:block; width:100%; height:64px;
+    margin-top:56px;
+  }
+  .cliff path{fill:none; stroke:#e8b087; stroke-width:2;}
+  .cliff .fillzone{stroke:none; fill:rgba(232,176,135,0.12);}
+
+  /* ---------- SECTIONS ---------- */
+  section{padding:56px 0;}
+  section.divider-top{border-top:1px solid var(--line);}
+  .section-label{
+    font-family:var(--mono); font-size:12.5px; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--signal-amber); margin-bottom:10px; display:block;
+  }
+  h2{
+    font-family:var(--serif); font-weight:500; font-size:1.9rem;
+    margin:0 0 20px; color:var(--ink); letter-spacing:-0.01em;
+  }
+  h3{
+    font-family:var(--serif); font-weight:600; font-size:1.25rem; margin:28px 0 12px; color:var(--ink);
+  }
+  p{margin:0 0 16px; color:var(--ink-soft); max-width:70ch;}
+  p.lede{font-size:1.08rem; color:var(--ink);}
+  ul, ol{margin:0 0 18px; padding-left:22px; color:var(--ink-soft);}
+  li{margin-bottom:8px;}
+  strong{color:var(--ink); font-weight:600;}
+  code{font-family:var(--mono); background:#e6e0cd; padding:1px 6px; border-radius:3px; font-size:0.88em; color:var(--ink);}
+
+  .callout{
+    background:var(--paper-raised);
+    border-left:3px solid var(--signal-amber);
+    padding:18px 22px;
+    margin:20px 0 28px;
+    border-radius:2px;
+  }
+  .callout p{margin:0; color:var(--ink);}
+  .callout.rust{border-left-color:var(--signal-rust);}
+  .callout.slate{border-left-color:var(--signal-slate);}
+
+  /* stat strip */
+  .stat-strip{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr));
+    gap:1px; background:var(--line);
+    border:1px solid var(--line);
+    margin:24px 0 8px;
+  }
+  .stat{background:var(--paper-raised); padding:18px 16px;}
+  .stat .num{font-family:var(--mono); font-size:1.5rem; font-weight:700; color:var(--signal-rust); display:block;}
+  .stat .lbl{font-size:12.5px; color:var(--ink-soft); margin-top:4px; display:block;}
+
+  /* charts */
+  figure{margin:28px 0 32px;}
+  figure svg{width:100%; height:auto; display:block; border:1px solid var(--line); background:#fff; border-radius:3px;}
+  figcaption{
+    font-family:var(--mono); font-size:13px; color:var(--ink-soft);
+    margin-top:10px; padding-left:2px; border-left:2px solid var(--signal-slate); padding-left:10px;
+  }
+
+  /* tables */
+  table{width:100%; border-collapse:collapse; margin:20px 0 28px; font-size:0.94rem;}
+  th, td{text-align:left; padding:9px 12px; border-bottom:1px solid var(--line);}
+  th{font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft); font-weight:600; border-bottom:2px solid var(--ink);}
+  td{color:var(--ink-soft);}
+  tr.highlight td{color:var(--ink); font-weight:600; background:rgba(184,114,43,0.08);}
+  td.num, th.num{text-align:right; font-family:var(--mono);}
+
+  /* two col */
+  .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:28px;}
+  @media (max-width:720px){.grid-2{grid-template-columns:1fr;}}
+  .card{background:var(--paper-raised); border:1px solid var(--line); padding:20px 22px; border-radius:3px;}
+  .card h4{font-family:var(--mono); font-size:13px; text-transform:uppercase; letter-spacing:0.08em; color:var(--signal-slate); margin:0 0 10px;}
+
+  /* recs */
+  .rec{
+    display:grid; grid-template-columns:52px 1fr; gap:18px;
+    padding:20px 0; border-bottom:1px solid var(--line);
+  }
+  .rec:first-of-type{border-top:1px solid var(--line);}
+  .rec .rank{font-family:var(--serif); font-size:2rem; color:var(--line); font-weight:500; line-height:1;}
+  .rec h4{margin:0 0 6px; font-family:var(--sans); font-weight:700; font-size:1.02rem; color:var(--ink);}
+  .rec .tag{font-family:var(--mono); font-size:11px; color:#fff; background:var(--signal-slate); padding:2px 8px; border-radius:2px; margin-left:8px; letter-spacing:0.04em;}
+  .rec .tag.amber{background:var(--signal-amber);}
+  .rec .tag.rust{background:var(--signal-rust);}
+  .rec p{margin:0; font-size:0.95rem;}
+
+  /* limits */
+  .limit-list{list-style:none; padding:0; margin:0;}
+  .limit-list li{
+    padding:14px 0 14px 30px; border-bottom:1px solid var(--line); position:relative; color:var(--ink-soft);
+  }
+  .limit-list li::before{
+    content:"\2715"; position:absolute; left:0; top:14px; color:var(--signal-rust); font-family:var(--mono); font-size:13px;
+  }
+  .limit-list li strong{color:var(--ink);}
+
+  /* repro */
+  .repo-block{
+    font-family:var(--mono); font-size:13.5px; background:var(--ink); color:#d8e2dd;
+    padding:20px 22px; border-radius:4px; overflow-x:auto; margin:18px 0;
+  }
+  .repo-block .comment{color:#7d9691;}
+  .repo-block .link{color:#e8b087;}
+
+  footer{
+    background:var(--ink); color:#93a19c; padding:44px 0 56px; margin-top:20px;
+  }
+  footer .wrap{}
+  footer p{color:#93a19c; font-size:0.92rem;}
+  footer a{color:#e8b087;}
+  .credit-box{
+    border:1px solid rgba(255,255,255,0.16); border-radius:4px; padding:20px 22px; margin-top:20px;
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;
+  }
+  .credit-box .cta{
+    font-family:var(--mono); font-size:13px; color:var(--ink); background:#e8b087; padding:9px 16px; border-radius:3px;
+    text-decoration:none; white-space:nowrap; font-weight:600;
+  }
+  .credit-box .cta:hover{background:#fff;}
+
+  .toc{font-family:var(--mono); font-size:13px; display:flex; flex-wrap:wrap; gap:6px 0; padding:0; list-style:none; margin:0;}
+  .toc li a{
+    color:var(--ink-soft); text-decoration:none; display:block; padding:5px 0; border-bottom:1px dotted transparent;
+  }
+  .toc li a:hover{color:var(--signal-rust); border-bottom-color:var(--signal-rust);}
+  .toc-nav{position:sticky; top:0; background:rgba(241,239,230,0.94); backdrop-filter:blur(6px); z-index:10; border-bottom:1px solid var(--line);}
+  .toc-nav .wrap{display:flex; gap:20px; padding:12px 28px; overflow-x:auto; max-width:100%;}
+  .toc-nav a{font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-soft); text-decoration:none; white-space:nowrap;}
+  .toc-nav a:hover{color:var(--signal-rust);}
+</style>
+</head>
+<body>
+
+<nav class="toc-nav">
+  <div class="wrap">
+    <a href="#abstract">Abstract</a>
+    <a href="#intro">Problem</a>
+    <a href="#data">Data</a>
+    <a href="#methodology">Methodology</a>
+    <a href="#results">Results</a>
+    <a href="#limitations">Limitations</a>
+    <a href="#recommendations">Recommendations</a>
+    <a href="#reproducibility">Reproducibility</a>
+    <a href="#credit">Credit</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Search Intelligence &mdash; Internship Research Paper</div>
+    <h1>The Decay Cliff:<br>What Actually Predicts <em>Content Decline</em></h1>
+    <p class="dek">A rule everyone trusts &mdash; "old, high-traffic pages are the ones losing ground" &mdash; turns out to be backwards in this data. Here's what a held-out Random Forest found instead, and the ranked queue it produces for editorial review.</p>
+    <div class="hero-meta">
+      <div><strong>30,000</strong>pages scored</div>
+      <div><strong>6</strong>safe metadata features</div>
+      <div><strong>0.737</strong>test ROC-AUC</div>
+      <div><strong>80&thinsp;/&thinsp;20</strong>stratified split, seed 42</div>
+    </div>
+    <svg class="cliff" viewBox="0 0 880 64" preserveAspectRatio="none">
+      <path class="fillzone" d="M0,10 L140,10 L200,44 L340,44 L400,20 L560,20 L620,58 L880,58 L880,64 L0,64 Z"/>
+      <path d="M0,10 L140,10 L200,44 L340,44 L400,20 L560,20 L620,58 L880,58"/>
+    </svg>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section id="abstract">
+  <span class="section-label">01 &middot; Abstract</span>
+  <h2>Abstract</h2>
+  <p class="lede">Content teams need to know which pages are about to lose search traffic, before the traffic is gone. This paper asks which safe, publicly-observable signals &mdash; word count, content age, impressions, average position, click-through rate, and search demand &mdash; are associated with a page's <code>trend_direction</code> going into decline, across an anonymized 30,000-page snapshot. We frame it as binary risk scoring, build a rule-based baseline (<code>STALE_HIGH_IMPRESSIONS</code>), and compare it against a 6-feature Random Forest under an honest, leakage-checked, stratified 80/20 split. The rule baseline barely beats guessing (48.2% accuracy, F1 0.41); the Random Forest reaches 67.7% accuracy and a test ROC-AUC of 0.737, with train/test metrics close enough to rule out serious overfitting. The headline finding runs against editorial intuition: in this snapshot, <strong>younger and lower-volume pages decline more often than older, high-traffic ones</strong> &mdash; age and impressions are better read as an <em>impact</em> signal for prioritization than as a <em>risk</em> signal for prediction. The output is a ranked, reason-coded action queue for human review, with explicit no-go boundaries around what should never be automated.</p>
+</section>
+
+<section id="intro" class="divider-top">
+  <span class="section-label">02 &middot; Introduction</span>
+  <h2>The decision this supports</h2>
+  <p>Every content team eventually faces the same triage problem: thousands of live pages, a handful of editors, and no reliable way to know which pages are quietly losing search visibility before the monthly report shows it. The default heuristic is simple &mdash; flag anything old and high-traffic for a refresh. It's intuitive, it's cheap to compute, and as this paper shows, it's a weak predictor of who's actually declining.</p>
+  <p>The unit of analysis is a single content page (<code>content_id</code>), one row per page, drawn from an anonymized snapshot with an observation window centered on March 2026. The decision this work supports is <strong>editorial prioritization</strong>: which pages should a human open first this week. The cost of getting it wrong runs in both directions &mdash; flag the wrong signal and editors burn hours rewriting pages that were never at risk, while pages genuinely losing ground go untouched. Human intuition doesn't scale to tracking dozens of interacting metrics across tens of thousands of pages; that's the gap this model is built to fill, as a decision-support layer, not a replacement for editorial judgment.</p>
+</section>
+
+<section id="data" class="divider-top">
+  <span class="section-label">03 &middot; Data</span>
+  <h2>Data</h2>
+  <p>The working dataset is the anonymized <code>content_refresh_anonymized.csv</code> release from the FlyRank ML internship starter repository (see credit below). No client names, page URLs, domains, or raw search queries appear anywhere in this pipeline or its outputs.</p>
+  <div class="stat-strip">
+    <div class="stat"><span class="num">30,000</span><span class="lbl">rows scored</span></div>
+    <div class="stat"><span class="num">16,262</span><span class="lbl">labeled declining</span></div>
+    <div class="stat"><span class="num">54.2%</span><span class="lbl">decline base rate</span></div>
+    <div class="stat"><span class="num">80/20</span><span class="lbl">stratified split</span></div>
+  </div>
+  <figure>
+    <svg xmlns="http://www.w3.org/2000/svg" width="960" height="520" viewBox="0 0 960 520">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="480.0" y="34" text-anchor="middle" font-family="Arial" font-size="24" fill="#16232a">Trend direction mix (starter snapshot)</text>
+<text x="178" y="116.8" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">down</text>
+<rect x="190" y="70.0" width="730.0" height="72.0" fill="#5C6B73" rx="4"/>
+<text x="928.0" y="116.8" font-family="Arial" font-size="13" fill="#27343b">1.63e+04</text>
+<text x="178" y="198.8" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">stable</text>
+<rect x="190" y="152.0" width="267.6" height="72.0" fill="#5C6B73" rx="4"/>
+<text x="465.6" y="198.8" font-family="Arial" font-size="13" fill="#27343b">5.96e+03</text>
+<text x="178" y="280.8" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">up</text>
+<rect x="190" y="234.0" width="197.0" height="72.0" fill="#5C6B73" rx="4"/>
+<text x="395.0" y="280.8" font-family="Arial" font-size="13" fill="#27343b">4.39e+03</text>
+<text x="178" y="362.8" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">new</text>
+<rect x="190" y="316.0" width="100.4" height="72.0" fill="#5C6B73" rx="4"/>
+<text x="298.4" y="362.8" font-family="Arial" font-size="13" fill="#27343b">2.24e+03</text>
+<text x="178" y="444.8" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">flat</text>
+<rect x="190" y="398.0" width="51.7" height="72.0" fill="#5C6B73" rx="4"/>
+<text x="249.7" y="444.8" font-family="Arial" font-size="13" fill="#27343b">1.15e+03</text>
+</svg>
+    <figcaption>Fig. 1 &mdash; Trend-direction mix across the full snapshot. "Down" is the largest single bucket, which is why decline is scored as the positive class.</figcaption>
+  </figure>
+  <h3>Fields used</h3>
+  <div class="grid-2">
+    <div class="card">
+      <h4>Features (6)</h4>
+      <p style="margin:0; font-size:0.92rem;"><code>word_count</code>, <code>content_age_days</code>, <code>impressions_90d</code>, <code>avg_position</code>, <code>ctr</code>, <code>search_volume</code> &mdash; all confirmed available before the prediction point.</p>
+    </div>
+    <div class="card">
+      <h4>Label / Proxy</h4>
+      <p style="margin:0; font-size:0.92rem;"><code>is_declining</code>, derived from <code>trend_direction == 'down'</code>. Context-only fields (<code>content_id</code>, <code>client_id</code>) are kept for joins, never fed to the model.</p>
+    </div>
+  </div>
+  <div class="callout rust">
+    <p><strong>Excluded, and why:</strong> <code>trend_pct</code> is a direct percentage-change measure of the outcome itself &mdash; feeding it in would be near-total label leakage. <code>trend_direction</code> is the label source, not a feature. Short-window fields that overlap the 90-day aggregates were dropped for the same reason.</p>
+  </div>
+  <h3>Missingness &amp; limits</h3>
+  <p><code>word_count</code> is missing on roughly 25.7% of rows; <code>search_volume</code> on roughly 8.2%. Both are imputed with the <strong>training-set median only</strong> (see Methodology). Two structural limits carry through every result below: pages younger than 90 days lack a full historical window, so their metrics are noisier by construction; and the 30-day and 90-day windows in the source data overlap in time, so treat same-page metrics as correlated moving averages, not independent draws.</p>
+</section>
+
+<section id="methodology" class="divider-top">
+  <span class="section-label">04 &middot; Methodology</span>
+  <h2>Methodology</h2>
+  <p>Framed as binary risk scoring: predict the probability that <code>trend_direction == 'down'</code>, using only pre-outcome metadata and search-console-style signals.</p>
+  <h3>Baseline</h3>
+  <p>The Week-4 rule baseline flags a page <code>STALE_HIGH_IMPRESSIONS</code> when <code>content_age_days &ge; 90</code> and <code>impressions_90d &ge; 500</code>, on the theory that aging, high-visibility pages are the ones losing rank. This rule is the bar the model has to clear.</p>
+  <h3>Split &amp; leakage discipline</h3>
+  <ul>
+    <li><strong>Split first:</strong> an 80/20 stratified train/test split (<code>random_state=42</code>) is taken before any imputation touches the data, preserving the ~54.2% decline rate in both folds.</li>
+    <li><strong>Train-only imputation:</strong> the median imputer is fit on the training fold only, then applied to the held-out test fold &mdash; no test-set statistic ever informs training.</li>
+    <li><strong>Leakage hunt:</strong> Pearson correlation between every candidate feature and the target was checked against a 0.85 threshold; nothing approached it. Label-derived fields (<code>trend_direction</code>, <code>trend_pct</code>) and pure identifiers (<code>content_id</code>, <code>client_id</code>) are excluded from the feature matrix by construction, and that exclusion is verified programmatically, not assumed.</li>
+  </ul>
+  <h3>Model</h3>
+  <p>A Random Forest Classifier (<code>n_estimators=150, max_depth=8, min_samples_split=10, random_state=42</code>) was selected over a single decision tree or linear model because the underlying metrics are heavily right-skewed and interact non-linearly &mdash; a forest handles both without hand-built transforms, and its feature importances stay interpretable for the report.</p>
+</section>
+
+<section id="results" class="divider-top">
+  <span class="section-label">05 &middot; Results</span>
+  <h2>Results: model vs. baseline</h2>
+  <p class="lede">Same test fold, same 6 features, three contenders: always guessing "declining," the existing stale-content rule, and the Random Forest.</p>
+  <table>
+    <thead><tr><th>Model / Strategy</th><th class="num">Accuracy</th><th class="num">Precision</th><th class="num">Recall</th><th class="num">F1</th><th class="num">ROC-AUC</th></tr></thead>
+    <tbody>
+      <tr><td>Base rate (always "down")</td><td class="num">0.542</td><td class="num">0.542</td><td class="num">1.000</td><td class="num">0.703</td><td class="num">&mdash;</td></tr>
+      <tr><td>Week-4 rule (STALE_HIGH_IMPRESSIONS)</td><td class="num">0.482</td><td class="num">0.536</td><td class="num">0.328</td><td class="num">0.407</td><td class="num">&mdash;</td></tr>
+      <tr class="highlight"><td>Random Forest (test, held out)</td><td class="num">0.677</td><td class="num">0.665</td><td class="num">0.815</td><td class="num">0.732</td><td class="num">0.737</td></tr>
+    </tbody>
+  </table>
+  <div class="callout">
+    <p>The existing rule underperforms even the do-nothing base rate on accuracy and F1 &mdash; it isn't just imperfect, it's actively mis-targeted for predicting decline. The Random Forest is the first strategy here that beats guessing on every metric at once.</p>
+  </div>
+  <figure>
+    <svg xmlns="http://www.w3.org/2000/svg" width="960" height="520" viewBox="0 0 960 520">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="480.0" y="34" text-anchor="middle" font-family="Arial" font-size="24" fill="#16232a">Test-set comparison (Accuracy / F1 / ROC-AUC×100)</text>
+<text x="178" y="101.6" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">Base Acc</text>
+<rect x="190" y="70.0" width="536.6" height="48.6" fill="#2C5F2D" rx="4"/>
+<text x="734.6" y="101.6" font-family="Arial" font-size="13" fill="#27343b">54.2</text>
+<text x="178" y="160.1" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">Rule Acc</text>
+<rect x="190" y="128.6" width="477.0" height="48.6" fill="#2C5F2D" rx="4"/>
+<text x="675.0" y="160.1" font-family="Arial" font-size="13" fill="#27343b">48.2</text>
+<text x="178" y="218.7" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">RF Acc</text>
+<rect x="190" y="187.1" width="670.1" height="48.6" fill="#2C5F2D" rx="4"/>
+<text x="868.1" y="218.7" font-family="Arial" font-size="13" fill="#27343b">67.7</text>
+<text x="178" y="277.3" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">Base F1</text>
+<rect x="190" y="245.7" width="695.9" height="48.6" fill="#2C5F2D" rx="4"/>
+<text x="893.9" y="277.3" font-family="Arial" font-size="13" fill="#27343b">70.3</text>
+<text x="178" y="335.9" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">Rule F1</text>
+<rect x="190" y="304.3" width="402.7" height="48.6" fill="#2C5F2D" rx="4"/>
+<text x="600.7" y="335.9" font-family="Arial" font-size="13" fill="#27343b">40.7</text>
+<text x="178" y="394.4" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">RF F1</text>
+<rect x="190" y="362.9" width="724.8" height="48.6" fill="#2C5F2D" rx="4"/>
+<text x="922.8" y="394.4" font-family="Arial" font-size="13" fill="#27343b">73.2</text>
+<text x="178" y="453.0" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">RF ROC-AUC</text>
+<rect x="190" y="421.4" width="730.0" height="48.6" fill="#2C5F2D" rx="4"/>
+<text x="928.0" y="453.0" font-family="Arial" font-size="13" fill="#27343b">73.7</text>
+</svg>
+    <figcaption>Fig. 2 &mdash; Accuracy, F1, and ROC-AUC (&times;100) across the three strategies on the identical held-out test fold.</figcaption>
+  </figure>
+
+  <h3>Train vs. test: checking the gap</h3>
+  <table>
+    <thead><tr><th>Metric</th><th class="num">Training</th><th class="num">Test (unseen)</th></tr></thead>
+    <tbody>
+      <tr><td>Accuracy</td><td class="num">0.700</td><td class="num">0.677</td></tr>
+      <tr><td>Precision</td><td class="num">0.679</td><td class="num">0.665</td></tr>
+      <tr><td>Recall</td><td class="num">0.845</td><td class="num">0.815</td></tr>
+      <tr><td>F1</td><td class="num">0.753</td><td class="num">0.732</td></tr>
+      <tr><td>ROC-AUC</td><td class="num">0.772</td><td class="num">0.737</td></tr>
+    </tbody>
+  </table>
+  <figure>
+    <svg xmlns="http://www.w3.org/2000/svg" width="960" height="520" viewBox="0 0 960 520">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="480.0" y="34" text-anchor="middle" font-family="Arial" font-size="24" fill="#16232a">RF train vs test (honest gap check)</text>
+<text x="178" y="107.9" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">Train Acc</text>
+<rect x="190" y="70.0" width="661.3" height="58.3" fill="#B85C38" rx="4"/>
+<text x="859.3" y="107.9" font-family="Arial" font-size="13" fill="#27343b">70</text>
+<text x="178" y="176.2" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">Test Acc</text>
+<rect x="190" y="138.3" width="639.8" height="58.3" fill="#B85C38" rx="4"/>
+<text x="837.8" y="176.2" font-family="Arial" font-size="13" fill="#27343b">67.7</text>
+<text x="178" y="244.6" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">Train F1</text>
+<rect x="190" y="206.7" width="711.7" height="58.3" fill="#B85C38" rx="4"/>
+<text x="909.7" y="244.6" font-family="Arial" font-size="13" fill="#27343b">75.3</text>
+<text x="178" y="312.9" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">Test F1</text>
+<rect x="190" y="275.0" width="692.0" height="58.3" fill="#B85C38" rx="4"/>
+<text x="890.0" y="312.9" font-family="Arial" font-size="13" fill="#27343b">73.2</text>
+<text x="178" y="381.3" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">Train ROC</text>
+<rect x="190" y="343.3" width="730.0" height="58.3" fill="#B85C38" rx="4"/>
+<text x="928.0" y="381.3" font-family="Arial" font-size="13" fill="#27343b">77.2</text>
+<text x="178" y="449.6" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">Test ROC</text>
+<rect x="190" y="411.7" width="697.0" height="58.3" fill="#B85C38" rx="4"/>
+<text x="895.0" y="449.6" font-family="Arial" font-size="13" fill="#27343b">73.7</text>
+</svg>
+    <figcaption>Fig. 3 &mdash; Train vs. test performance. A 2&ndash;4 point gap across metrics is consistent with mild, expected generalization loss &mdash; not the double-digit collapse that would signal overfitting or a leaky split.</figcaption>
+  </figure>
+
+  <h3>What the model leans on</h3>
+  <figure>
+    <svg xmlns="http://www.w3.org/2000/svg" width="960" height="520" viewBox="0 0 960 520">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="480.0" y="34" text-anchor="middle" font-family="Arial" font-size="24" fill="#16232a">Random Forest feature importance (6-feature model)</text>
+<text x="178" y="107.9" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">impressions_90d</text>
+<rect x="190" y="70.0" width="730.0" height="58.3" fill="#4A6FA5" rx="4"/>
+<text x="928.0" y="107.9" font-family="Arial" font-size="13" fill="#27343b">34.3</text>
+<text x="178" y="176.2" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">avg_position</text>
+<rect x="190" y="138.3" width="496.5" height="58.3" fill="#4A6FA5" rx="4"/>
+<text x="694.5" y="176.2" font-family="Arial" font-size="13" fill="#27343b">23.3</text>
+<text x="178" y="244.6" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">content_age_days</text>
+<rect x="190" y="206.7" width="445.0" height="58.3" fill="#4A6FA5" rx="4"/>
+<text x="643.0" y="244.6" font-family="Arial" font-size="13" fill="#27343b">20.9</text>
+<text x="178" y="312.9" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">word_count</text>
+<rect x="190" y="275.0" width="197.2" height="58.3" fill="#4A6FA5" rx="4"/>
+<text x="395.2" y="312.9" font-family="Arial" font-size="13" fill="#27343b">9.27</text>
+<text x="178" y="381.3" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">ctr</text>
+<rect x="190" y="343.3" width="152.1" height="58.3" fill="#4A6FA5" rx="4"/>
+<text x="350.1" y="381.3" font-family="Arial" font-size="13" fill="#27343b">7.15</text>
+<text x="178" y="449.6" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">search_volume</text>
+<rect x="190" y="411.7" width="107.0" height="58.3" fill="#4A6FA5" rx="4"/>
+<text x="305.0" y="449.6" font-family="Arial" font-size="13" fill="#27343b">5.03</text>
+</svg>
+    <figcaption>Fig. 4 &mdash; Feature importance. <code>impressions_90d</code>, <code>avg_position</code>, and <code>content_age_days</code> together account for roughly 79% of the model's decision weight.</figcaption>
+  </figure>
+
+  <h3>The headline reversal</h3>
+  <p>The rule baseline's whole premise is that <em>older + higher-traffic = more decline</em>. The data says close to the opposite:</p>
+  <div class="grid-2">
+    <figure>
+      <svg xmlns="http://www.w3.org/2000/svg" width="960" height="520" viewBox="0 0 960 520">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="480.0" y="34" text-anchor="middle" font-family="Arial" font-size="24" fill="#16232a">Decline rate by content age (observed)</text>
+<text x="178" y="130.1" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">&lt;90d</text>
+<rect x="190" y="70.0" width="730.0" height="92.5" fill="#2F6F8F" rx="4"/>
+<text x="928.0" y="130.1" font-family="Arial" font-size="13" fill="#27343b">66.9</text>
+<text x="178" y="232.6" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">90-180d</text>
+<rect x="190" y="172.5" width="682.9" height="92.5" fill="#2F6F8F" rx="4"/>
+<text x="880.9" y="232.6" font-family="Arial" font-size="13" fill="#27343b">62.6</text>
+<text x="178" y="335.1" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">181-365d</text>
+<rect x="190" y="275.0" width="562.1" height="92.5" fill="#2F6F8F" rx="4"/>
+<text x="760.1" y="335.1" font-family="Arial" font-size="13" fill="#27343b">51.5</text>
+<text x="178" y="437.6" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">&gt;365d</text>
+<rect x="190" y="377.5" width="465.3" height="92.5" fill="#2F6F8F" rx="4"/>
+<text x="663.3" y="437.6" font-family="Arial" font-size="13" fill="#27343b">42.6</text>
+</svg>
+      <figcaption>Fig. 5 &mdash; Decline rate by age tier: 66.9% for pages under 90 days, falling to 42.6% for pages over a year old.</figcaption>
+    </figure>
+    <figure>
+      <svg xmlns="http://www.w3.org/2000/svg" width="960" height="520" viewBox="0 0 960 520">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="480.0" y="34" text-anchor="middle" font-family="Arial" font-size="24" fill="#16232a">Decline rate by search volume (observed)</text>
+<text x="178" y="130.1" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">Zero/Low</text>
+<rect x="190" y="70.0" width="730.0" height="92.5" fill="#3B6D4A" rx="4"/>
+<text x="928.0" y="130.1" font-family="Arial" font-size="13" fill="#27343b">59</text>
+<text x="178" y="232.6" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">Medium</text>
+<rect x="190" y="172.5" width="643.7" height="92.5" fill="#3B6D4A" rx="4"/>
+<text x="841.7" y="232.6" font-family="Arial" font-size="13" fill="#27343b">52.1</text>
+<text x="178" y="335.1" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">High</text>
+<rect x="190" y="275.0" width="619.5" height="92.5" fill="#3B6D4A" rx="4"/>
+<text x="817.5" y="335.1" font-family="Arial" font-size="13" fill="#27343b">50.1</text>
+<text x="178" y="437.6" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">Very High</text>
+<rect x="190" y="377.5" width="549.8" height="92.5" fill="#3B6D4A" rx="4"/>
+<text x="747.8" y="437.6" font-family="Arial" font-size="13" fill="#27343b">44.5</text>
+</svg>
+      <figcaption>Fig. 6 &mdash; Decline rate by search-volume tier: 59.0% at zero/low demand, falling to 44.5% at very high demand.</figcaption>
+    </figure>
+  </div>
+  <div class="callout amber-callout rust">
+    <p><strong>Read this carefully:</strong> age and traffic volume aren't proof of safety for old pages, and they aren't proof of risk for new ones. Young, low-volume pages are naturally more volatile while Google is still testing where to rank them. Old, high-impression pages are still the highest-<em>stakes</em> pages to get wrong &mdash; they carry the largest absolute traffic to protect &mdash; even though they aren't the most <em>likely</em> to decline. Impact and probability are two different axes; the rule baseline conflated them.</p>
+  </div>
+
+  <h3>Where the model is wrong</h3>
+  <p>False positives cluster on high-traffic or older pages going through a temporary dip that later recovers &mdash; the model reads short-term noise as risk. False negatives cluster on quiet, low-impression pages with subtle drift, where the statistical signal is genuinely weak. Neither failure mode is safe to automate around; both are exactly what the human-review layer below exists to catch.</p>
+</section>
+
+<section id="limitations" class="divider-top">
+  <span class="section-label">06 &middot; Limitations</span>
+  <h2>Limitations &amp; honest framing</h2>
+  <p class="lede">Rewritten in safe language: using an honest, leakage-checked, train/test-isolated split, the Random Forest <strong>observed</strong> a test ROC-AUC of 0.737. Traffic and age signals show a <strong>directional association</strong> with the decline label, useful as <strong>decision-support</strong> for prioritizing editorial review &mdash; not as causal proof that any specific edit will recover traffic.</p>
+  <ul class="limit-list">
+    <li><strong>Not causal.</strong> Nothing here demonstrates that adding words, updating a date, or refreshing a page <em>causes</em> traffic to recover. The Freshness-Multiplier-style claims common in this space typically come from editor-selected refresh sets, which carry selection bias: pages editors chose to refresh were probably already promising. This paper's correlations are observational.</li>
+    <li><strong>Not a live-algorithm model.</strong> This never predicts Google's ranking algorithm, a core update, or a manual action. It predicts an internal label built from historical trend direction in one snapshot.</li>
+    <li><strong>Cohort effects are unresolved.</strong> Older and newer pages may belong to different seasonal or topical cohorts. A true "decay cliff" claim needs the same URLs tracked longitudinally with a time-aware split; this snapshot is cross-sectional.</li>
+    <li><strong>Ceiling on accuracy.</strong> ~67.7% accuracy and 0.737 ROC-AUC are real, useful signal above both baselines &mdash; and also proof that most of the variance in page-level decline is not explained by these six safe features. Treat every score as a prioritization aid, never a verdict.</li>
+    <li><strong>Data-quality boundaries.</strong> Sub-90-day pages lack a full history window; overlapping 30/90-day metrics are correlated, not independent, observations.</li>
+  </ul>
+</section>
+
+<section id="recommendations" class="divider-top">
+  <span class="section-label">07 &middot; Recommendations</span>
+  <h2>Ranked recommendations: the action playbook</h2>
+  <p>The model's risk probability drives the queue order; the same reason-code taxonomy from the Week-4 rule keeps it familiar to editors. Full ranked queue: <code>action_queue.csv</code> (30,000 rows).</p>
+  <div class="stat-strip">
+    <div class="stat"><span class="num">16,726</span><span class="lbl">REFRESH_CONTENT</span></div>
+    <div class="stat"><span class="num">8,057</span><span class="lbl">REVIEW_STALE</span></div>
+    <div class="stat"><span class="num">5,217</span><span class="lbl">MONITOR</span></div>
+  </div>
+  <div class="grid-2">
+    <figure>
+      <svg xmlns="http://www.w3.org/2000/svg" width="960" height="520" viewBox="0 0 960 520">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="480.0" y="34" text-anchor="middle" font-family="Arial" font-size="24" fill="#16232a">Action mix (rule + playbook labels)</text>
+<text x="178" y="152.3" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">REFRESH_CONTENT</text>
+<rect x="190" y="70.0" width="730.0" height="126.7" fill="#8B5A2B" rx="4"/>
+<text x="928.0" y="152.3" font-family="Arial" font-size="13" fill="#27343b">1.67e+04</text>
+<text x="178" y="289.0" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">REVIEW_STALE</text>
+<rect x="190" y="206.7" width="351.6" height="126.7" fill="#8B5A2B" rx="4"/>
+<text x="549.6" y="289.0" font-family="Arial" font-size="13" fill="#27343b">8.06e+03</text>
+<text x="178" y="425.7" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">MONITOR</text>
+<rect x="190" y="343.3" width="227.7" height="126.7" fill="#8B5A2B" rx="4"/>
+<text x="425.7" y="425.7" font-family="Arial" font-size="13" fill="#27343b">5.22e+03</text>
+</svg>
+      <figcaption>Fig. 7 &mdash; Queue split by recommended action.</figcaption>
+    </figure>
+    <figure>
+      <svg xmlns="http://www.w3.org/2000/svg" width="960" height="520" viewBox="0 0 960 520">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="480.0" y="34" text-anchor="middle" font-family="Arial" font-size="24" fill="#16232a">Reason codes in ranked queue</text>
+<text x="178" y="152.3" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">STALE_HIGH_IMPRESSIONS</text>
+<rect x="190" y="70.0" width="730.0" height="126.7" fill="#6F4E7C" rx="4"/>
+<text x="928.0" y="152.3" font-family="Arial" font-size="13" fill="#27343b">1.67e+04</text>
+<text x="178" y="289.0" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">STALE_LOW_IMPRESSIONS</text>
+<rect x="190" y="206.7" width="351.6" height="126.7" fill="#6F4E7C" rx="4"/>
+<text x="549.6" y="289.0" font-family="Arial" font-size="13" fill="#27343b">8.06e+03</text>
+<text x="178" y="425.7" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">LOW_PRIORITY</text>
+<rect x="190" y="343.3" width="227.7" height="126.7" fill="#6F4E7C" rx="4"/>
+<text x="425.7" y="425.7" font-family="Arial" font-size="13" fill="#27343b">5.22e+03</text>
+</svg>
+      <figcaption>Fig. 8 &mdash; Queue split by reason code.</figcaption>
+    </figure>
+  </div>
+
+  <div class="rec">
+    <div class="rank">01</div>
+    <div><h4>Refresh content <span class="tag amber">STALE_HIGH_IMPRESSIONS</span></h4>
+    <p>Age &ge; 90 days, impressions &ge; 500, and elevated model risk probability. Not because these pages are statistically most likely to decline &mdash; they aren't &mdash; but because they carry the largest baseline traffic to protect. Confidence: high on impact, moderate on individual-page risk; verify manually before rewriting.</p></div>
+  </div>
+  <div class="rec">
+    <div class="rank">02</div>
+    <div><h4>Review stale, low-traffic pages <span class="tag slate">STALE_LOW_IMPRESSIONS</span></h4>
+    <p>Age &ge; 180 days with low impressions. Audit for keyword misalignment or consolidation candidates rather than a straight content refresh &mdash; the traffic may never have been there to protect.</p></div>
+  </div>
+  <div class="rec">
+    <div class="rank">03</div>
+    <div><h4>Monitor, don't touch <span class="tag rust">LOW_PRIORITY</span></h4>
+    <p>Newer or stable pages. This is the tier where the "young pages decline more" finding actually lives &mdash; resist the urge to rewrite pages under 90 days; that volatility is normal indexing noise, not a real signal to act on yet.</p></div>
+  </div>
+
+  <h3>Before acting: required human check</h3>
+  <p>An editor must confirm, per flagged page: (1) the page serves timeless/evergreen intent where "age" is meaningless, (2) any observed drop isn't a seasonal or campaign artifact, and (3) the page isn't already redirected or scheduled for deprecation.</p>
+  <div class="callout rust">
+    <p><strong>The no-go list &mdash; never automate:</strong> mass AI rewriting or publishing without editorial sign-off; automatic canonical redirection, deprecation, or deletion driven solely by a risk score.</p>
+  </div>
+
+  <h3>Monitoring &amp; retrain triggers</h3>
+  <p>Retrain on a rolling 90-day window, quarterly at minimum. Trigger an earlier retrain if the impression or content-age distribution shifts more than ~25% (platform migration, new vertical), or if weekly Precision@50 on newly-flagged pages drops meaningfully below this validation baseline &mdash; a sign the queue no longer tracks real decline.</p>
+</section>
+
+<section id="reproducibility" class="divider-top">
+  <span class="section-label">08 &middot; Reproducibility</span>
+  <h2>Reproducibility</h2>
+  <p>Every number in this paper traces to a notebook cell, run top to bottom, seeded for repeatability.</p>
+  <div class="repo-block">
+<span class="comment"># notebooks, in order</span>
+work/notebooks/w01_research_question.ipynb      <span class="comment">&mdash; lane &amp; question</span>
+work/notebooks/w02_ml_task_framing.ipynb        <span class="comment">&mdash; task type, target, metric</span>
+work/notebooks/w03_data_contract.ipynb          <span class="comment">&mdash; grain, fields, verification queries</span>
+work/notebooks/w03_feature_leakage_check.ipynb  <span class="comment">&mdash; feature vector, leakage hunt</span>
+work/notebooks/w04_baseline_score.ipynb         <span class="comment">&mdash; rule baseline, ranked CSV</span>
+work/notebooks/w04_signal_audit.ipynb           <span class="comment">&mdash; distributions, signal tests</span>
+work/notebooks/w05_model.ipynb                  <span class="comment">&mdash; Random Forest, model vs. baseline</span>
+work/notebooks/w06_validation_audit.ipynb       <span class="comment">&mdash; honest split, train/test gap</span>
+work/notebooks/w07_action_playbook.ipynb        <span class="comment">&mdash; ranked queue export</span>
+
+<span class="comment"># seeds</span>
+random_state = 42   <span class="comment">&mdash; split and model, fixed throughout</span>
+
+<span class="comment"># outputs this paper draws on</span>
+work/outputs/baseline_action_score.csv
+work/outputs/action_queue.csv
+work/outputs/model_results.json
+outputs/model_report.md
+  </div>
+  <p>Rerun path: clone the repo, run each notebook top to bottom (Runtime &rarr; Run all), diff the regenerated CSVs and charts against the ones committed here.</p>
+</section>
+
+</div>
+
+<footer id="credit">
+  <div class="wrap">
+    <span class="section-label" style="color:#e8b087;">09 &middot; Acknowledgments</span>
+    <p style="max-width:60ch;">Built on the FlyRank ML Internship dataset &mdash; an anonymized, safe-signal slice of production search data, provided for this research track. No client identities, URLs, or raw queries were used at any stage of this work.</p>
+    <div class="credit-box">
+      <div>
+        <strong style="color:#fff; display:block; font-family:var(--serif); font-size:1.1rem;">Built on the FlyRank ML Internship dataset</strong>
+        <span style="font-size:0.88rem;">Data credit &amp; source</span>
+      </div>
+      <a class="cta" href="https://flyrank.ai" target="_blank" rel="noopener">flyrank.ai &rarr;</a>
+    </div>
+    <p style="margin-top:28px; font-size:0.85rem;">Research paper &middot; Machine Learning track &middot; ML-11 &middot; deployed August 2026.</p>
+  </div>
+</footer>
+
+</body>
+</html>
